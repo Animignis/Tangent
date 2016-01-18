@@ -2,4 +2,11 @@
     <string name="app_name">Tangent</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_home">HomeActivity</string>
+    <string name="search_title">Search Stories</string>
+    <string-array name="story_sort_array">
+        <item>Newest Stories</item>
+        <item>Most Read</item>
+        <item>Most Popular</item>
+        <item>Recently Updated</item>
+    </string-array>
 </resources>

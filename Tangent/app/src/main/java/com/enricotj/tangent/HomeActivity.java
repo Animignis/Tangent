@@ -29,9 +29,14 @@ public class HomeActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Spinner dropdown = (Spinner)findViewById(R.id.spinner);
-        String[] items = new String[]{"1", "2", "three"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, items);
+        String[] items = new String[]{"Newest Stories", "Most Read", "Most Popular", "Recently Updated"};
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.story_sort_array,
+                R.layout.support_simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         dropdown.setAdapter(adapter);
+
+        //respond to user selections using info from belo link:
+        //http://developer.android.com/guide/topics/ui/controls/spinner.html
     }
 
 }
