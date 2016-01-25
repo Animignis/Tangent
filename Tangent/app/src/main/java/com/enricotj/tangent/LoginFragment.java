@@ -1,6 +1,7 @@
 package com.enricotj.tangent;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -165,6 +166,16 @@ public class LoginFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    public void invalidLogin() {
+        new AlertDialog.Builder(getActivity())
+                .setTitle("Invalid Login Credentials")
+                .setMessage("Please make sure your email and password are correct.")
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+        showProgress(false);
+        mLoggingIn = false;
     }
 
     public interface OnLoginListener {

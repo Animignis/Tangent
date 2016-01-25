@@ -24,6 +24,8 @@ import com.firebase.client.FirebaseError;
 
 public class MainActivity extends AppCompatActivity implements LoginFragment.OnLoginListener, HomeFragment.OnLogoutListener {
 
+    private LoginFragment mLoginFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +48,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnL
         else {
             switchToHomeFragment(Constants.FIREBASE_URL + "/users/" + auth.getUid());
         }
+
+
 /*
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -94,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnL
         @Override
         public void onAuthenticationError(FirebaseError firebaseError) {
             Log.e(Constants.TAG, "onAuthenticationError: " + firebaseError.getMessage());
+            mLoginFragment.invalidLogin();
         }
     }
 
@@ -123,7 +128,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnL
 
     private void switchToLoginFragment() {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.fragment, new LoginFragment(), "Login");
+        mLoginFragment = new LoginFragment();
+        ft.replace(R.id.fragment, mLoginFragment, "Login");
         ft.commit();
     }
 

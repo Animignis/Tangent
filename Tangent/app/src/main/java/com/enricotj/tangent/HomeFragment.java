@@ -3,7 +3,11 @@ package com.enricotj.tangent;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,7 +21,7 @@ import android.widget.TextView;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class HomeFragment extends Fragment implements Toolbar.OnMenuItemClickListener {
+public class HomeFragment extends Fragment implements Toolbar.OnMenuItemClickListener, View.OnClickListener {
 
     private OnLogoutListener mListener;
 
@@ -33,15 +37,28 @@ public class HomeFragment extends Fragment implements Toolbar.OnMenuItemClickLis
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
+        // fab
+        FloatingActionButton fab = (FloatingActionButton)rootView.findViewById(R.id.fab);
+        fab.setOnClickListener(this);
+
         // set up toolbar
         Toolbar mToolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
         getActivity().getMenuInflater().inflate(R.menu.menu_main, mToolbar.getMenu());
         mToolbar.setOnMenuItemClickListener(this);
 
-        mFilter = (Spinner)container.findViewById(R.id.spinner);
-        String[] items = new String[]{"1", "2", "three"};
-        ArrayAdapter<String> adapter = new ArrayAdapter(container.getContext(), android.R.layout.simple_spinner_dropdown_item, items);
-        //mFilter.setAdapter(adapter);
+        mFilter = (Spinner)rootView.findViewById(R.id.spinner);
+
+        //String[] items = new String[]{"Newest Stories", "Most Read", "Most Popular", "Recently Updated"};
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this.getContext(), R.array.story_sort_array,
+                R.layout.support_simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mFilter.setAdapter(adapter);
+
+        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.story_recyclerview);
+        recyclerView.setAdapter(new StoryNodeAdapter());
+        LinearLayoutManager manager = new LinearLayoutManager(getActivity());
+        manager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(manager);
 
         return rootView;
     }
@@ -56,6 +73,15 @@ public class HomeFragment extends Fragment implements Toolbar.OnMenuItemClickLis
                 return true;
         }
         return false;
+    }
+
+    @Override
+    public void onClick(View v) {
+        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+        Fragment fragment = new AddNodeFragment();
+        ft.replace(R.id.fragment, fragment, Constants.TAG);
+        ft.addToBackStack("add_node");
+        ft.commit();
     }
 
     public interface OnLogoutListener {

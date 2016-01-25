@@ -16,8 +16,13 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="action_logout">Logout</string>
-	
+
     <string name="search_title">Search Stories</string>
+    <string name="node_hint_title">Title</string>
+    <string name="node_hint_body">Body</string>
+    <string name="next_node">Next</string>
+    <string name="add_node">Add</string>
+    <string name="random_next">Random Next</string>
     <string-array name="story_sort_array">
         <item>Newest Stories</item>
         <item>Most Read</item>

@@ -1,0 +1,70 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark"
+    android:padding="24dp"
+    tools:context="com.enricotj.tangent.AddNodeFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/node_new_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:background="@color/colorWhiteBlue"
+            android:hint="@string/node_hint_title"
+            android:maxLength="50"
+            android:padding="8dp"
+            android:textSize="32sp" />
+
+        <Button
+            android:id="@+id/button_cancel_add_node"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/colorAccent"
+            android:padding="8dp"
+            android:text="@android:string/cancel"
+            android:textAlignment="center"
+            android:textColor="@color/colorWhiteBlue"
+            android:textSize="24sp" />
+
+        <Button
+            android:id="@+id/button_add_node"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/button_cancel_add_node"
+            android:layout_marginBottom="8dp"
+            android:background="@color/colorAccent"
+            android:padding="8dp"
+            android:text="@string/add_node"
+            android:textAlignment="center"
+            android:textColor="@color/colorWhiteBlue"
+            android:textSize="24sp" />
+
+        <EditText
+            android:id="@+id/node_new_body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/button_add_node"
+            android:layout_below="@id/node_new_title"
+            android:layout_marginBottom="24dp"
+            android:background="@color/colorWhiteBlue"
+            android:gravity="top|start"
+            android:hint="@string/node_hint_body"
+            android:inputType="textMultiLine"
+            android:maxLength="300"
+            android:maxLines="10"
+            android:minLines="6"
+            android:padding="8dp"
+            android:scrollbars="vertical"
+            android:textSize="24sp" />
+
+    </RelativeLayout>
+
+</FrameLayout>

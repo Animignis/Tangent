@@ -1,0 +1,67 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark"
+    android:padding="24dp"
+    tools:context="com.enricotj.tangent.AddNodeFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/node_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:maxLength="50"
+            android:padding="8dp"
+            android:textColor="@color/colorWhiteBlue"
+            android:textSize="32sp" />
+
+        <Button
+            android:id="@+id/button_view_random_branch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/colorAccent"
+            android:padding="8dp"
+            android:text="@string/random_next"
+            android:textAlignment="center"
+            android:textColor="@color/colorWhiteBlue"
+            android:textSize="24sp" />
+
+        <Button
+            android:id="@+id/button_view_branches"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/button_view_random_branch"
+            android:layout_marginBottom="8dp"
+            android:background="@color/colorAccent"
+            android:padding="8dp"
+            android:text="@string/next_node"
+            android:textAlignment="center"
+            android:textColor="@color/colorWhiteBlue"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/node_body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/button_view_branches"
+            android:layout_below="@id/node_title"
+            android:layout_marginBottom="24dp"
+            android:gravity="top|start"
+            android:maxLength="300"
+            android:maxLines="10"
+            android:minLines="6"
+            android:padding="8dp"
+            android:scrollbars="vertical"
+            android:textColor="@color/colorWhiteBlue"
+            android:textSize="24sp" />
+
+    </RelativeLayout>
+
+</FrameLayout>
