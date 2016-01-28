@@ -22,6 +22,9 @@ import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class MainActivity extends AppCompatActivity implements LoginFragment.OnLoginListener, HomeFragment.OnLogoutListener {
 
     private LoginFragment mLoginFragment;
@@ -46,29 +49,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnL
             switchToLoginFragment();
         }
         else {
-            switchToHomeFragment(Constants.FIREBASE_URL + "/users/" + auth.getUid());
+            switchToHomeFragment();
         }
-
-
-/*
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        Spinner dropdown = (Spinner)findViewById(R.id.spinner);
-        String[] items = new String[]{"1", "2", "three"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, items);
-        dropdown.setAdapter(adapter);
-        */
     }
 
     private boolean isExpired(AuthData authData) {
@@ -82,6 +64,12 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnL
     }
 
     @Override
+    public void onLoginNewAccount(String email, String username, String password) {
+        Firebase firebase = new Firebase(Constants.FIREBASE_URL);
+        firebase.authWithPassword(email, password, new TangentAuthResultHandler(username));
+    }
+
+    @Override
     public void onLogout() {
         Firebase firebase = new Firebase(Constants.FIREBASE_URL);
         firebase.unauth();
@@ -89,10 +77,20 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnL
     }
 
     class TangentAuthResultHandler implements Firebase.AuthResultHandler {
+        private String username = null;
+        public TangentAuthResultHandler() { }
+        public TangentAuthResultHandler(String username) { this.username = username; }
 
         @Override
         public void onAuthenticated(AuthData authData) {
-            switchToHomeFragment(Constants.FIREBASE_URL + "/users/" + authData.getUid());
+            if (username != null) {
+                Map<String, String> map = new HashMap<>();
+                map.put("username", username);
+                Firebase users = new Firebase(Constants.FRIEBASE_USERS);
+                users.child(authData.getUid()).setValue(map);
+                username = null;
+            }
+            switchToHomeFragment();
         }
 
         @Override
@@ -133,11 +131,9 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnL
         ft.commit();
     }
 
-    private void switchToHomeFragment(String repoUrl) {
+    private void switchToHomeFragment() {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-
         Fragment homeFragment = new HomeFragment();
-
         ft.replace(R.id.fragment, homeFragment, "Passwords");
         ft.commit();
     }

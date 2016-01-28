@@ -55,7 +55,7 @@ public class HomeFragment extends Fragment implements Toolbar.OnMenuItemClickLis
         mFilter.setAdapter(adapter);
 
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.story_recyclerview);
-        recyclerView.setAdapter(new StoryNodeAdapter());
+        recyclerView.setAdapter(new StoryAdapter());
         LinearLayoutManager manager = new LinearLayoutManager(getActivity());
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(manager);
