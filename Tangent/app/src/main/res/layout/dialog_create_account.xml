@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/dialog_create_account_email_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/dialog_create_account_email_hint" />
+
+    <EditText
+        android:id="@+id/dialog_create_account_username_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/dialog_create_account_username_hint" />
+
+    <EditText
+        android:id="@+id/dialog_create_account_password_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:hint="@string/dialog_create_account_password_hint" />
+
+    <EditText
+        android:id="@+id/dialog_create_account_password_confirm_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:hint="@string/dialog_create_account_password_confirm_hint" />
+
+</LinearLayout>

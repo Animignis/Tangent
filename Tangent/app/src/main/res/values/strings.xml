@@ -23,6 +23,10 @@
     <string name="next_node">Next</string>
     <string name="add_node">Add</string>
     <string name="random_next">Random Next</string>
+    <string name="dialog_create_account_email_hint">example@gmail.com</string>
+    <string name="dialog_create_account_username_hint">Username</string>
+    <string name="dialog_create_account_password_hint">Password</string>
+    <string name="dialog_create_account_password_confirm_hint">Confirm Password</string>
     <string-array name="story_sort_array">
         <item>Newest Stories</item>
         <item>Most Read</item>

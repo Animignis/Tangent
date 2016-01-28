@@ -82,7 +82,7 @@
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/rosefire_sign_in_button"
+            android:id="@+id/create_account_button"
             style="?android:textAppearanceSmall"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
