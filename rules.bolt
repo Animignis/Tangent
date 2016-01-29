@@ -1,0 +1,19 @@
+type Key extends String;
+type UserID extends String;
+type Username extends String {
+	validate() { this.length > 4; }
+}
+
+type Node {
+	validate() { this.body.length <= 300 && this.author != Null; }
+
+	author: UserID
+	body: String
+}
+
+path /nodes/{node} is Node;
+
+path / {
+	read() { true; }
+	write() { true; }
+}
