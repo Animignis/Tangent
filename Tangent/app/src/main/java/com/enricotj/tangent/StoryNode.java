@@ -1,18 +1,22 @@
 package com.enricotj.tangent;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Created by enricotj on 1/24/2016.
  */
-public class StoryNode {
+public class StoryNode implements Parcelable {
     private String author;
     private String body;
-    private Map<String, Boolean>[] branches;
+    private Map<String, Boolean> branches = new HashMap<>();
     private String parent;
-    private String timestamp;
+    private long timestamp;
     private String title;
 
     @JsonIgnore
@@ -22,7 +26,8 @@ public class StoryNode {
 
     }
 
-    public StoryNode(String author, String body, Map<String, Boolean>[] branches, String parent, String timestamp, String title) {
+    public StoryNode(String author, String body, Map<String, Boolean> branches, String parent, long timestamp, String title) {
+        branches = new HashMap<>();
         this.author = author;
         this.body = body;
         this.branches = branches;
@@ -30,6 +35,27 @@ public class StoryNode {
         this.timestamp = timestamp;
         this.title = title;
     }
+
+    protected StoryNode(Parcel in) {
+        author = in.readString();
+        body = in.readString();
+        parent = in.readString();
+        timestamp = in.readLong();
+        title = in.readString();
+        key = in.readString();
+    }
+
+    public static final Creator<StoryNode> CREATOR = new Creator<StoryNode>() {
+        @Override
+        public StoryNode createFromParcel(Parcel in) {
+            return new StoryNode(in);
+        }
+
+        @Override
+        public StoryNode[] newArray(int size) {
+            return new StoryNode[size];
+        }
+    };
 
     public String getAuthor() {
         return author;
@@ -47,11 +73,11 @@ public class StoryNode {
         this.body = body;
     }
 
-    public Map<String, Boolean>[] getBranches() {
+    public Map<String, Boolean> getBranches() {
         return branches;
     }
 
-    public void setBranches(Map<String, Boolean>[] branches) {
+    public void setBranches(Map<String, Boolean> branches) {
         this.branches = branches;
     }
 
@@ -63,11 +89,11 @@ public class StoryNode {
         this.parent = parent;
     }
 
-    public String getTimestamp() {
+    public long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(String timestamp) {
+    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -85,5 +111,20 @@ public class StoryNode {
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(author);
+        dest.writeString(title);
+        dest.writeMap(branches);
+        dest.writeString(body);
+        dest.writeString(parent);
+        dest.writeLong(timestamp);
     }
 }
