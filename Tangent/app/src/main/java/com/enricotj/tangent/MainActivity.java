@@ -2,21 +2,15 @@ package com.enricotj.tangent;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
@@ -86,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnL
             if (username != null) {
                 Map<String, String> map = new HashMap<>();
                 map.put("username", username);
-                Firebase users = new Firebase(Constants.FRIEBASE_USERS);
+                Firebase users = new Firebase(Constants.FIREBASE_USERS);
                 users.child(authData.getUid()).setValue(map);
                 username = null;
             }
@@ -134,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnL
     private void switchToHomeFragment() {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         Fragment homeFragment = new HomeFragment();
-        ft.replace(R.id.fragment, homeFragment, "Passwords");
+        ft.replace(R.id.fragment, homeFragment, "Home");
         ft.commit();
     }
 

@@ -11,7 +11,7 @@ import java.util.List;
 public class Story {
     private String lastupdated;
     private int numfavorites;
-    private int root;
+    private String root;
     private int size;
     private int views;
 
@@ -22,7 +22,7 @@ public class Story {
 
     }
 
-    public Story(String lastupdated, int numfavorites, int root, int size, int views) {
+    public Story(String lastupdated, int numfavorites, String root, int size, int views) {
         this.lastupdated = lastupdated;
         this.numfavorites = numfavorites;
         this.root = root;
@@ -46,11 +46,11 @@ public class Story {
         this.numfavorites = numfavorites;
     }
 
-    public int getRoot() {
+    public String getRoot() {
         return root;
     }
 
-    public void setRoot(int root) {
+    public void setRoot(String root) {
         this.root = root;
     }
 

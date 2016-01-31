@@ -2,14 +2,16 @@ package com.enricotj.tangent;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.util.Map;
+
 /**
  * Created by enricotj on 1/24/2016.
  */
 public class StoryNode {
     private String author;
     private String body;
-    private int[] branches;
-    private int parent;
+    private Map<String, Boolean>[] branches;
+    private String parent;
     private String timestamp;
     private String title;
 
@@ -20,7 +22,7 @@ public class StoryNode {
 
     }
 
-    public StoryNode(String author, String body, int[] branches, int parent, String timestamp, String title) {
+    public StoryNode(String author, String body, Map<String, Boolean>[] branches, String parent, String timestamp, String title) {
         this.author = author;
         this.body = body;
         this.branches = branches;
@@ -45,19 +47,19 @@ public class StoryNode {
         this.body = body;
     }
 
-    public int[] getBranches() {
+    public Map<String, Boolean>[] getBranches() {
         return branches;
     }
 
-    public void setBranches(int[] branches) {
+    public void setBranches(Map<String, Boolean>[] branches) {
         this.branches = branches;
     }
 
-    public int getParent() {
+    public String getParent() {
         return parent;
     }
 
-    public void setParent(int parent) {
+    public void setParent(String parent) {
         this.parent = parent;
     }
 

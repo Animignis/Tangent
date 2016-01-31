@@ -25,7 +25,7 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder> 
     private Firebase mFirebase;
 
     public StoryAdapter() {
-        mFirebase = new Firebase(Constants.FRIEBASE_STORIES);
+        mFirebase = new Firebase(Constants.FIREBASE_STORIES);
         mFirebase.addChildEventListener(this);
     }
 
@@ -37,12 +37,11 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final Story story = mStories.get(position);
-        Firebase ref = new Firebase(Constants.FRIEBASE_NODES + "/" + story.getRoot());
-
         final ViewHolder fholder = holder;
 
-        ref.addValueEventListener(new ValueEventListener() {
+        final Story story = mStories.get(position);
+        Firebase ref = new Firebase(Constants.FIREBASE_NODES + "/" + story.getRoot());
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.d(Constants.TAG, dataSnapshot.getRef().getPath().toString());

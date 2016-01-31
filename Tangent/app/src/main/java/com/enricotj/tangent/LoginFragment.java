@@ -7,9 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -25,7 +23,6 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
-import java.util.HashMap;
 import java.util.Map;
 
 
@@ -48,8 +45,6 @@ public class LoginFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mLoggingIn = false;
-        //ActionBar action=getActivity().getActionBar();
-        //action.hide();
     }
 
     @Override
@@ -117,7 +112,6 @@ public class LoginFragment extends Fragment {
             focusView = mPasswordView;
             cancelLogin = true;
         }
-
         if (TextUtils.isEmpty(email)) {
             mEmailView.setError(getString(R.string.field_required));
             focusView = mEmailView;
