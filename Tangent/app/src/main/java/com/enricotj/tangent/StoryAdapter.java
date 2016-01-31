@@ -22,11 +22,22 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder> 
 
     private ArrayList<Story> mStories = new ArrayList<>();
 
-    private Firebase mFirebase;
+    private Firebase mFirebaseStories;
+    private Firebase mFirebaseStoryNodes;
 
     public StoryAdapter() {
-        mFirebase = new Firebase(Constants.FIREBASE_STORIES);
-        mFirebase.addChildEventListener(this);
+        mFirebaseStories = new Firebase(Constants.FIREBASE_STORIES);
+        mFirebaseStories.addChildEventListener(this);
+
+        mFirebaseStoryNodes = new Firebase(Constants.FIREBASE_NODES);
+
+    }
+
+    public void add(StoryNode storyNode) {
+        Firebase newStoryNode = mFirebaseStoryNodes.push();
+        newStoryNode.setValue(storyNode);
+        Story story = new Story(storyNode.getTimestamp(), 0, newStoryNode.getKey(), 1, 1);
+        mFirebaseStories.push().setValue(story);
     }
 
     @Override
@@ -68,6 +79,9 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder> 
         // Deserialize the JSON.
         Story story = dataSnapshot.getValue(Story.class);
         Log.d(Constants.TAG, "" + story.getRoot());
+
+
+
         // We set the key ourselves.
         story.setKey(dataSnapshot.getKey());
         // Add it to our local list and display it
