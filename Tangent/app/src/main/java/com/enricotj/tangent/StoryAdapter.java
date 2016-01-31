@@ -21,16 +21,20 @@ import java.util.ArrayList;
 public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder> implements ChildEventListener{
 
     private ArrayList<Story> mStories = new ArrayList<>();
+    private ArrayList<StoryNode> mRootNodes = new ArrayList<>();
 
     private Firebase mFirebaseStories;
     private Firebase mFirebaseStoryNodes;
 
-    public StoryAdapter() {
+    private StoryNodeSelectCallback mStoryNodeSelectCallback;
+
+    public StoryAdapter(StoryNodeSelectCallback storyNodeSelectCallback) {
+        mStoryNodeSelectCallback = storyNodeSelectCallback;
+
         mFirebaseStories = new Firebase(Constants.FIREBASE_STORIES);
         mFirebaseStories.addChildEventListener(this);
 
         mFirebaseStoryNodes = new Firebase(Constants.FIREBASE_NODES);
-
     }
 
     public void add(StoryNode storyNode) {
@@ -48,18 +52,41 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final ViewHolder fholder = holder;
+        final StoryNode storyNode = mRootNodes.get(position);
+        holder.mTitleText.setText(storyNode.getTitle());
+        holder.mBodyPreviewText.setText(storyNode.getBody());
 
-        final Story story = mStories.get(position);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mStoryNodeSelectCallback.onStorySelect(storyNode);
+            }
+        });
+    }
+
+    @Override
+    public int getItemCount() {
+        return mRootNodes.size();
+    }
+
+    @Override
+    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+        // Deserialize the JSON.
+        final Story story = dataSnapshot.getValue(Story.class);
+        Log.d(Constants.TAG, "" + story.getRoot());
+
+        // We set the key ourselves.
+        story.setKey(dataSnapshot.getKey());
+
         Firebase ref = new Firebase(Constants.FIREBASE_NODES + "/" + story.getRoot());
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.d(Constants.TAG, dataSnapshot.getRef().getPath().toString());
-                Log.d(Constants.TAG, dataSnapshot.getKey());
+                mStories.add(0, story);
                 final StoryNode storyNode = dataSnapshot.getValue(StoryNode.class);
-                fholder.mTitleText.setText(storyNode.getTitle());
-                fholder.mBodyPreviewText.setText(storyNode.getBody());
+                storyNode.setKey(dataSnapshot.getKey());
+                mRootNodes.add(0, storyNode);
+                notifyDataSetChanged();
             }
 
             @Override
@@ -67,26 +94,6 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder> 
 
             }
         });
-    }
-
-    @Override
-    public int getItemCount() {
-        return mStories.size();
-    }
-
-    @Override
-    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-        // Deserialize the JSON.
-        Story story = dataSnapshot.getValue(Story.class);
-        Log.d(Constants.TAG, "" + story.getRoot());
-
-
-
-        // We set the key ourselves.
-        story.setKey(dataSnapshot.getKey());
-        // Add it to our local list and display it
-        mStories.add(0, story);
-        notifyDataSetChanged();
     }
 
     @Override
@@ -118,5 +125,9 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder> 
             mTitleText = (TextView) itemView.findViewById(R.id.title_text);
             mBodyPreviewText = (TextView) itemView.findViewById(R.id.preview_text);
         }
+    }
+
+    public interface StoryNodeSelectCallback {
+        public void onStorySelect(StoryNode storyNode);
     }
 }

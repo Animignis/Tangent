@@ -16,12 +16,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class HomeFragment extends Fragment implements Toolbar.OnMenuItemClickListener, View.OnClickListener {
+public class HomeFragment extends Fragment implements Toolbar.OnMenuItemClickListener, View.OnClickListener, StoryAdapter.StoryNodeSelectCallback {
 
     private OnLogoutListener mListener;
 
@@ -55,7 +54,7 @@ public class HomeFragment extends Fragment implements Toolbar.OnMenuItemClickLis
         mFilter.setAdapter(adapter);
 
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.story_recyclerview);
-        recyclerView.setAdapter(new StoryAdapter());
+        recyclerView.setAdapter(new StoryAdapter(this));
         LinearLayoutManager manager = new LinearLayoutManager(getActivity());
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(manager);
@@ -84,6 +83,20 @@ public class HomeFragment extends Fragment implements Toolbar.OnMenuItemClickLis
         ft.commit();
     }
 
+    @Override
+    public void onStorySelect(StoryNode storyNode) {
+        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+        Fragment fragment = new ReaderFragment();
+
+        Bundle args = new Bundle();
+        args.putParcelable(ReaderFragment.ARG_NODE, storyNode);
+        fragment.setArguments(args);
+
+        ft.replace(R.id.fragment, fragment, Constants.TAG);
+        ft.addToBackStack("read_node");
+        ft.commit();
+    }
+
     public interface OnLogoutListener {
         void onLogout();
     }
@@ -104,4 +117,6 @@ public class HomeFragment extends Fragment implements Toolbar.OnMenuItemClickLis
         super.onDetach();
         mListener = null;
     }
+
+
 }

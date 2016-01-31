@@ -9,7 +9,7 @@ import java.util.List;
  * Created by enricotj on 1/13/2016.
  */
 public class Story {
-    private String lastupdated;
+    private long lastupdated;
     private int numfavorites;
     private String root;
     private int size;
@@ -22,7 +22,7 @@ public class Story {
 
     }
 
-    public Story(String lastupdated, int numfavorites, String root, int size, int views) {
+    public Story(long lastupdated, int numfavorites, String root, int size, int views) {
         this.lastupdated = lastupdated;
         this.numfavorites = numfavorites;
         this.root = root;
@@ -30,11 +30,11 @@ public class Story {
         this.views = views;
     }
 
-    public String getLastupdated() {
+    public long getLastupdated() {
         return lastupdated;
     }
 
-    public void setLastupdated(String lastupdated) {
+    public void setLastupdated(long lastupdated) {
         this.lastupdated = lastupdated;
     }
 

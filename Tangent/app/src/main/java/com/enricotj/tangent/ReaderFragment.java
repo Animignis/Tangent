@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 
 /**
@@ -17,9 +18,9 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class ReaderFragment extends Fragment {
-    private static final String ARG_NODE_ID = "node_id";
+    public static final String ARG_NODE = "node";
 
-    private int mNodeID;
+    private StoryNode mNode;
 
     public ReaderFragment() {
         // Required empty public constructor
@@ -29,7 +30,7 @@ public class ReaderFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mNodeID = getArguments().getInt(ARG_NODE_ID);
+            mNode = getArguments().getParcelable(ARG_NODE);
         }
     }
 
@@ -37,7 +38,14 @@ public class ReaderFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_reader, container, false);
+        View rootView =  inflater.inflate(R.layout.fragment_reader, container, false);
+
+        TextView titleText = (TextView) rootView.findViewById(R.id.node_title);
+        titleText.setText(mNode.getTitle());
+        TextView bodyText = (TextView) rootView.findViewById(R.id.node_body);
+        bodyText.setText(mNode.getBody());
+
+        return rootView;
     }
 
     @Override
