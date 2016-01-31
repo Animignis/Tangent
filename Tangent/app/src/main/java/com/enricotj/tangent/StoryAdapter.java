@@ -54,7 +54,7 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        return mStories.size();
+        return mRootNodes.size();
     }
 
     @Override
@@ -64,14 +64,14 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder> 
         Log.d(Constants.TAG, "" + story.getRoot());
         // We set the key ourselves.
         story.setKey(dataSnapshot.getKey());
-        // Add it to our local list and display it
-        mStories.add(0, story);
 
         Firebase ref = new Firebase(Constants.FIREBASE_NODES + "/" + story.getRoot());
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                mStories.add(0, story);
                 final StoryNode storyNode = dataSnapshot.getValue(StoryNode.class);
+                storyNode.setKey(dataSnapshot.getKey());
                 mRootNodes.add(0, storyNode);
                 notifyDataSetChanged();
             }
