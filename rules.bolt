@@ -7,8 +7,10 @@ type Username extends String {
 type Node {
 	validate() { this.body.length <= 300 && this.author != Null; }
 
-	author: UserID
-	body: String
+	author: UserID,
+	body: String,
+	branches: Map<Key, Boolean>,
+	parent: Key
 }
 
 path /nodes/{node} is Node;
