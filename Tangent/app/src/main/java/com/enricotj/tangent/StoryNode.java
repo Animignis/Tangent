@@ -23,14 +23,12 @@ public class StoryNode implements Parcelable {
     private String key;
 
     public StoryNode() {
-
     }
 
-    public StoryNode(String author, String body, Map<String, Boolean> branches, String parent, long timestamp, String title) {
+    public StoryNode(String author, String title, String body, long timestamp, String parent) {
         branches = new HashMap<>();
         this.author = author;
         this.body = body;
-        this.branches = branches;
         this.parent = parent;
         this.timestamp = timestamp;
         this.title = title;

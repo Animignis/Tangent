@@ -24,7 +24,6 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder> 
     private ArrayList<StoryNode> mRootNodes = new ArrayList<>();
 
     private Firebase mFirebaseStories;
-    private Firebase mFirebaseStoryNodes;
 
     private StoryNodeSelectCallback mStoryNodeSelectCallback;
 
@@ -33,15 +32,6 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder> 
 
         mFirebaseStories = new Firebase(Constants.FIREBASE_STORIES);
         mFirebaseStories.addChildEventListener(this);
-
-        mFirebaseStoryNodes = new Firebase(Constants.FIREBASE_NODES);
-    }
-
-    public void add(StoryNode storyNode) {
-        Firebase newStoryNode = mFirebaseStoryNodes.push();
-        newStoryNode.setValue(storyNode);
-        Story story = new Story(storyNode.getTimestamp(), 0, newStoryNode.getKey(), 1, 1);
-        mFirebaseStories.push().setValue(story);
     }
 
     @Override

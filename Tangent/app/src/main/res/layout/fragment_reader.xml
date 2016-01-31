@@ -9,6 +9,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="16dp"
         android:orientation="vertical">
 
         <TextView
@@ -19,7 +20,7 @@
             android:maxLength="50"
             android:padding="8dp"
             android:textColor="@color/colorWhiteBlue"
-            android:textSize="32sp" />
+            android:textSize="24sp" />
 
         <Button
             android:id="@+id/button_view_random_branch"
@@ -31,7 +32,7 @@
             android:text="@string/random_next"
             android:textAlignment="center"
             android:textColor="@color/colorWhiteBlue"
-            android:textSize="24sp" />
+            android:textSize="18sp" />
 
         <Button
             android:id="@+id/button_view_branches"
@@ -44,7 +45,7 @@
             android:text="@string/next_node"
             android:textAlignment="center"
             android:textColor="@color/colorWhiteBlue"
-            android:textSize="24sp" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/node_body"
@@ -60,7 +61,7 @@
             android:padding="8dp"
             android:scrollbars="vertical"
             android:textColor="@color/colorWhiteBlue"
-            android:textSize="24sp" />
+            android:textSize="20sp" />
 
     </RelativeLayout>
 
