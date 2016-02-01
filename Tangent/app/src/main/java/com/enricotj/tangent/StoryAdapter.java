@@ -27,6 +27,8 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder> 
 
     private StoryNodeSelectCallback mStoryNodeSelectCallback;
 
+    private final int PREVIEW_TEXT_CHAR_LIMIT = 33;
+
     public StoryAdapter(StoryNodeSelectCallback storyNodeSelectCallback) {
         mStoryNodeSelectCallback = storyNodeSelectCallback;
 
@@ -43,15 +45,25 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final StoryNode storyNode = mRootNodes.get(position);
-        holder.mTitleText.setText(storyNode.getTitle());
-        holder.mBodyPreviewText.setText(storyNode.getBody());
-
+        String title = trimPreviewText(storyNode.getTitle());
+        String body = trimPreviewText(storyNode.getBody());
+        holder.mTitleText.setText(title);
+        holder.mBodyPreviewText.setText(body);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mStoryNodeSelectCallback.onStorySelect(storyNode);
             }
         });
+    }
+
+    private String trimPreviewText(String text) {
+        String ret = text;
+        if (ret.length() > PREVIEW_TEXT_CHAR_LIMIT) {
+            ret = ret.substring(0, PREVIEW_TEXT_CHAR_LIMIT);
+            ret += "...";
+        }
+        return ret;
     }
 
     @Override

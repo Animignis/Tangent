@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -44,10 +45,11 @@ public class HomeFragment extends Fragment implements Toolbar.OnMenuItemClickLis
         Toolbar mToolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
         getActivity().getMenuInflater().inflate(R.menu.menu_main, mToolbar.getMenu());
         mToolbar.setOnMenuItemClickListener(this);
+        mToolbar.setTitle(getString(R.string.app_name));
+        mToolbar.setTitleTextColor(ContextCompat.getColor(getContext(), R.color.colorWhiteBlue));
 
         mFilter = (Spinner)rootView.findViewById(R.id.spinner);
 
-        //String[] items = new String[]{"Newest Stories", "Most Read", "Most Popular", "Recently Updated"};
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this.getContext(), R.array.story_sort_array,
                 R.layout.support_simple_spinner_dropdown_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
