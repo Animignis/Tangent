@@ -86,16 +86,17 @@ public class HomeFragment extends Fragment implements Toolbar.OnMenuItemClickLis
     }
 
     @Override
-    public void onStorySelect(StoryNode storyNode) {
+    public void onStorySelect(StoryNode storyNode, String storyKey) {
         FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
         Fragment fragment = new ReaderFragment();
 
         Bundle args = new Bundle();
         args.putParcelable(ReaderFragment.ARG_NODE, storyNode);
+        args.putString(ReaderFragment.ARG_STORY_KEY, storyKey);
         fragment.setArguments(args);
 
         ft.replace(R.id.fragment, fragment, Constants.TAG);
-        ft.addToBackStack("read_node");
+        ft.addToBackStack("read_node_" + storyNode.getKey());
         ft.commit();
     }
 

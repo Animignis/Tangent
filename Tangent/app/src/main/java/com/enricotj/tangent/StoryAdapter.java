@@ -45,6 +45,7 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final StoryNode storyNode = mRootNodes.get(position);
+        final Story story = mStories.get(position);
         String title = trimPreviewText(storyNode.getTitle());
         String body = trimPreviewText(storyNode.getBody());
         holder.mTitleText.setText(title);
@@ -52,7 +53,7 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder> 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mStoryNodeSelectCallback.onStorySelect(storyNode);
+                mStoryNodeSelectCallback.onStorySelect(storyNode, story.getKey());
             }
         });
     }
@@ -130,6 +131,6 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder> 
     }
 
     public interface StoryNodeSelectCallback {
-        public void onStorySelect(StoryNode storyNode);
+        public void onStorySelect(StoryNode storyNode, String storyKey);
     }
 }
