@@ -110,11 +110,24 @@ public class ReaderFragment extends Fragment {
             }
         });
 
+        Button addButton = (Button) rootView.findViewById(R.id.button_add_node);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO: Transition to AddNodeFragment (send mNode as parcelable argument)
+            }
+        });
+        addButton.setEnabled(false);
+        addButton.setVisibility(View.GONE);
+
         if (mNode.getBranches().keySet().isEmpty()) {
             randomNextButton.setEnabled(false);
             randomNextButton.setVisibility(View.GONE);
             nextButton.setEnabled(false);
             nextButton.setVisibility(View.GONE);
+
+            addButton.setEnabled(true);
+            addButton.setVisibility(View.VISIBLE);
         }
 
         return rootView;

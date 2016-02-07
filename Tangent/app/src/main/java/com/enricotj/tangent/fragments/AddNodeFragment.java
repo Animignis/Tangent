@@ -29,7 +29,7 @@ import java.util.Date;
  */
 public class AddNodeFragment extends Fragment {
     private static final String ARG_PARENT = "parent";
-    private int mParent;
+    private StoryNode mParent;
 
     public AddNodeFragment() {
         // Required empty public constructor
@@ -39,9 +39,7 @@ public class AddNodeFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParent = getArguments().getInt(ARG_PARENT, -1);
-        } else {
-            mParent = -1;
+            mParent = getArguments().getParcelable(ARG_PARENT);
         }
     }
 
@@ -69,8 +67,13 @@ public class AddNodeFragment extends Fragment {
 
                 Firebase newStoryNode = ref.child("nodes").push();
                 newStoryNode.setValue(storyNode);
-                Story story = new Story(storyNode.getTimestamp(), 0, newStoryNode.getKey(), 1, 1);
-                ref.child("stories").push().setValue(story);
+
+                if (mParent == null) {
+                    Story story = new Story(storyNode.getTimestamp(), 0, newStoryNode.getKey(), 1, 1);
+                    ref.child("stories").push().setValue(story);
+                } else {
+                    // TODO: add this new node to the parent node's branch list in firebase
+                }
 
                 getActivity().onBackPressed();
             }

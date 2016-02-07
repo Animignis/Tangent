@@ -68,7 +68,7 @@ public class BranchFragment extends Fragment implements StoryAdapter.StoryNodeSe
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                // TODO: Transition to AddNodeFragment (send mNode as parcelable argument)
             }
         });
 
