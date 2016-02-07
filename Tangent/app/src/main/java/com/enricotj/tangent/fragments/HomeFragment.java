@@ -1,4 +1,4 @@
-package com.enricotj.tangent;
+package com.enricotj.tangent.fragments;
 
 
 import android.content.Context;
@@ -17,6 +17,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+
+import com.enricotj.tangent.Constants;
+import com.enricotj.tangent.R;
+import com.enricotj.tangent.adapters.StoryAdapter;
+import com.enricotj.tangent.models.StoryNode;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -86,7 +91,7 @@ public class HomeFragment extends Fragment implements Toolbar.OnMenuItemClickLis
     }
 
     @Override
-    public void onStorySelect(StoryNode storyNode, String storyKey) {
+    public void onStoryNodeSelect(StoryNode storyNode, String storyKey) {
         FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
         Fragment fragment = new ReaderFragment();
 

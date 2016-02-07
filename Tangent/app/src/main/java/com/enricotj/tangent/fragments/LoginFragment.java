@@ -1,4 +1,4 @@
-package com.enricotj.tangent;
+package com.enricotj.tangent.fragments;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -18,6 +18,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.enricotj.tangent.Constants;
+import com.enricotj.tangent.R;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;

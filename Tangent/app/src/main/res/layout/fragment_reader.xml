@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark"
 
-    tools:context="com.enricotj.tangent.AddNodeFragment">
+    tools:context=".fragments.AddNodeFragment">
 
     <LinearLayout
         android:layout_width="match_parent"

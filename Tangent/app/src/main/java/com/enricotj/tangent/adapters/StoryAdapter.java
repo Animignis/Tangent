@@ -1,4 +1,4 @@
-package com.enricotj.tangent;
+package com.enricotj.tangent.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -7,6 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.enricotj.tangent.Constants;
+import com.enricotj.tangent.R;
+import com.enricotj.tangent.models.Story;
+import com.enricotj.tangent.models.StoryNode;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -53,7 +57,7 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder> 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mStoryNodeSelectCallback.onStorySelect(storyNode, story.getKey());
+                mStoryNodeSelectCallback.onStoryNodeSelect(storyNode, story.getKey());
             }
         });
     }
@@ -131,6 +135,6 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder> 
     }
 
     public interface StoryNodeSelectCallback {
-        public void onStorySelect(StoryNode storyNode, String storyKey);
+        public void onStoryNodeSelect(StoryNode storyNode, String storyKey);
     }
 }

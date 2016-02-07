@@ -1,11 +1,10 @@
-package com.enricotj.tangent;
+package com.enricotj.tangent.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +12,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.support.v7.widget.Toolbar;
 
+import com.enricotj.tangent.Constants;
+import com.enricotj.tangent.R;
+import com.enricotj.tangent.models.StoryNode;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -20,7 +22,6 @@ import com.firebase.client.ValueEventListener;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
@@ -154,8 +155,17 @@ public class ReaderFragment extends Fragment {
     }
 
     private void showBranches() {
-        // TODO
+        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+        Fragment fragment = new BranchFragment();
 
+        Bundle args = new Bundle();
+        args.putParcelable(BranchFragment.ARG_NODE, mNode);
+        args.putString(BranchFragment.ARG_STORY_KEY, mStoryKey);
+        fragment.setArguments(args);
+
+        ft.replace(R.id.fragment, fragment, Constants.TAG);
+        ft.addToBackStack("show_branches_for_node_" + mNode.getKey());
+        ft.commit();
     }
 
     @Override

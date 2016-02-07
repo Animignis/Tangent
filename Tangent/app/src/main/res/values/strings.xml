@@ -12,9 +12,6 @@
     <string name="incorrect_password">Password is incorrect</string>
     <string name="field_required">This field is required</string>
     <string name="login_error">Login Error!</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="action_logout">Logout</string>
 
     <string name="search_title">Search Stories</string>

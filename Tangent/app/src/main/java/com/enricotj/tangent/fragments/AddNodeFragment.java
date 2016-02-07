@@ -1,4 +1,4 @@
-package com.enricotj.tangent;
+package com.enricotj.tangent.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -9,6 +9,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.enricotj.tangent.Constants;
+import com.enricotj.tangent.R;
+import com.enricotj.tangent.models.Story;
+import com.enricotj.tangent.models.StoryNode;
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 

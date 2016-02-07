@@ -1,4 +1,4 @@
-package com.enricotj.tangent;
+package com.enricotj.tangent.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;

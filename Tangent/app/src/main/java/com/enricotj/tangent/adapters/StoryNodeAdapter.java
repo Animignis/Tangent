@@ -1,12 +1,14 @@
-package com.enricotj.tangent;
+package com.enricotj.tangent.adapters;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.enricotj.tangent.Constants;
+import com.enricotj.tangent.R;
+import com.enricotj.tangent.models.StoryNode;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;

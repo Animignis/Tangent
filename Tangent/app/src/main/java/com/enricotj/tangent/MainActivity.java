@@ -12,6 +12,8 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.enricotj.tangent.fragments.HomeFragment;
+import com.enricotj.tangent.fragments.LoginFragment;
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
