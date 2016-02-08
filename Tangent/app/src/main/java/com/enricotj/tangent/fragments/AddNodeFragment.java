@@ -72,7 +72,10 @@ public class AddNodeFragment extends Fragment {
                     Story story = new Story(storyNode.getTimestamp(), 0, newStoryNode.getKey(), 1, 1);
                     ref.child("stories").push().setValue(story);
                 } else {
-                    // TODO: add this new node to the parent node's branch list in firebase
+                    //add this new node to the parent node's branch list in firebase
+                    String parentKey = mParent.getKey();
+                    ref.child("nodes/"+parentKey+"/branches/"+newStoryNode.getKey()).setValue(true);
+                    ref.child("nodes/"+newStoryNode.getKey()+"/parent").setValue(parentKey);
                 }
 
                 getActivity().onBackPressed();

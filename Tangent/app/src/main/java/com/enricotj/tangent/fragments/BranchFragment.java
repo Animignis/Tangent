@@ -54,7 +54,7 @@ public class BranchFragment extends Fragment implements StoryAdapter.StoryNodeSe
         View rootView =  inflater.inflate(R.layout.fragment_branch, container, false);
 
         Toolbar toolbar = (Toolbar)rootView.findViewById(R.id.toolbar_branches);
-        toolbar.setTitle(mNode.getTitle());
+        toolbar.setTitle(mNode.getTitle() + getResources().getString(R.string.branches_label));
         toolbar.setTitleTextColor(ContextCompat.getColor(getContext(), R.color.colorWhiteBlue));
         toolbar.setNavigationIcon(R.drawable.ic_back_small);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -68,7 +68,17 @@ public class BranchFragment extends Fragment implements StoryAdapter.StoryNodeSe
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: Transition to AddNodeFragment (send mNode as parcelable argument)
+                //Transition to AddNodeFragment (send mNode as parcelable argument)
+                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                Fragment fragment = new AddNodeFragment();
+
+                Bundle args = new Bundle();
+                args.putParcelable("parent", mNode);
+                fragment.setArguments(args);
+
+                ft.replace(R.id.fragment, fragment, Constants.TAG);
+                ft.addToBackStack("add_node_" + mNode.getKey());
+                ft.commit();
             }
         });
 

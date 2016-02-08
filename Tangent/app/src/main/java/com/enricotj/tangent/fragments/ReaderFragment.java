@@ -110,11 +110,21 @@ public class ReaderFragment extends Fragment {
             }
         });
 
-        Button addButton = (Button) rootView.findViewById(R.id.button_add_node);
+        Button addButton = (Button) rootView.findViewById(R.id.button_add_branch);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: Transition to AddNodeFragment (send mNode as parcelable argument)
+                //Transition to AddNodeFragment (send mNode as parcelable argument)
+                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                Fragment fragment = new AddNodeFragment();
+
+                Bundle args = new Bundle();
+                args.putParcelable("parent", mNode);
+                fragment.setArguments(args);
+
+                ft.replace(R.id.fragment, fragment, Constants.TAG);
+                ft.addToBackStack("add_node_" + mNode.getKey());
+                ft.commit();
             }
         });
         addButton.setEnabled(false);

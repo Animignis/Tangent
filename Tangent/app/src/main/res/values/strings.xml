@@ -24,6 +24,7 @@
     <string name="dialog_create_account_username_hint">Username</string>
     <string name="dialog_create_account_password_hint">Password</string>
     <string name="dialog_create_account_password_confirm_hint">Confirm Password</string>
+    <string name="branches_label">" Branches"</string>
     <string-array name="story_sort_array">
         <item>Newest Stories</item>
         <item>Most Read</item>
