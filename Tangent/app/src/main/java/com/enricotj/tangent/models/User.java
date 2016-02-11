@@ -2,6 +2,7 @@ package com.enricotj.tangent.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -12,7 +13,7 @@ public class User {
     private String key;
 
     private String username;
-    private Map<String, Boolean> favorites;
+    private Map<String, Boolean> favorites = new HashMap<>();
 
     public User() {
 

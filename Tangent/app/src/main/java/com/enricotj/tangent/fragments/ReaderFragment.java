@@ -3,9 +3,12 @@ package com.enricotj.tangent.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -13,8 +16,11 @@ import android.widget.TextView;
 import android.support.v7.widget.Toolbar;
 
 import com.enricotj.tangent.Constants;
+import com.enricotj.tangent.MainActivity;
 import com.enricotj.tangent.R;
+import com.enricotj.tangent.models.CurrentUser;
 import com.enricotj.tangent.models.StoryNode;
+import com.enricotj.tangent.models.User;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -24,6 +30,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Random;
 
 
@@ -35,12 +42,14 @@ import java.util.Random;
  * Use the {@link ReaderFragment#} factory method to
  * create an instance of this fragment.
  */
-public class ReaderFragment extends Fragment {
+public class ReaderFragment extends Fragment implements Toolbar.OnMenuItemClickListener {
     public static final String ARG_NODE = "node";
     public static final String ARG_STORY_KEY = "story_key";
 
     private StoryNode mNode;
     private String mStoryKey;
+
+    private HomeFragment.OnLogoutListener mListener;
 
     public ReaderFragment() {
         // Required empty public constructor
@@ -61,6 +70,8 @@ public class ReaderFragment extends Fragment {
         View rootView =  inflater.inflate(R.layout.fragment_reader, container, false);
 
         Toolbar toolbar = (Toolbar)rootView.findViewById(R.id.toolbar_reader);
+        getActivity().getMenuInflater().inflate(R.menu.menu_reader, toolbar.getMenu());
+        toolbar.setOnMenuItemClickListener(this);
         toolbar.setTitle(mNode.getTitle());
         toolbar.setTitleTextColor(ContextCompat.getColor(getContext(), R.color.colorWhiteBlue));
         toolbar.setNavigationIcon(R.drawable.ic_back_small);
@@ -70,6 +81,13 @@ public class ReaderFragment extends Fragment {
                 getActivity().onBackPressed();
             }
         });
+
+        if (CurrentUser.getInstance().getFavorites().containsKey(mStoryKey)) {
+            MenuItem item = toolbar.getMenu().findItem(R.id.action_favorite);
+            item.setChecked(true);
+            item.setIcon(android.R.drawable.star_big_on);
+            item.setTitle(R.string.action_unfavorite);
+        }
 
         final TextView authorText = (TextView) rootView.findViewById(R.id.node_author);
         Firebase ref = new Firebase(Constants.FIREBASE_USERS);
@@ -199,5 +217,51 @@ public class ReaderFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.action_favorite:
+                User user = CurrentUser.getInstance();
+                Log.d(Constants.TAG, "USER: " + user.getUsername());
+                if (item.isChecked()) {
+                    item.setIcon(android.R.drawable.star_big_off);
+                    item.setTitle(R.string.action_favorite);
+                    item.setChecked(false);
+
+                    Map<String, Boolean> favorites = user.getFavorites();
+                    favorites.remove(mStoryKey);
+                    user.setFavorites(favorites);
+                    CurrentUser.getInstance().setFavorites(favorites);
+                    Firebase userRef = new Firebase(Constants.FIREBASE_USERS + "/" + user.getKey());
+                    userRef.setValue(user);
+                }
+                else {
+                    item.setIcon(android.R.drawable.star_big_on);
+                    item.setTitle(R.string.action_unfavorite);
+                    item.setChecked(true);
+
+                    Map<String, Boolean> favorites = user.getFavorites();
+                    favorites.put(mStoryKey, true);
+                    user.setFavorites(favorites);
+                    CurrentUser.getInstance().setFavorites(favorites);
+                    Firebase userRef = new Firebase(Constants.FIREBASE_USERS + "/" + user.getKey());
+                    userRef.setValue(user);
+                }
+                return true;
+            case R.id.action_home:
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+                for(int i = 0; i < fm.getBackStackEntryCount() - 1; ++i) {
+                    fm.popBackStack();
+                }
+                getActivity().onBackPressed();
+                return true;
+            case R.id.action_logout:
+                mListener.onLogout();
+                return true;
+        }
+        return false;
     }
 }

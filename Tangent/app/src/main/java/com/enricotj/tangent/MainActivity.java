@@ -14,9 +14,13 @@ import android.view.WindowManager;
 
 import com.enricotj.tangent.fragments.HomeFragment;
 import com.enricotj.tangent.fragments.LoginFragment;
+import com.enricotj.tangent.models.CurrentUser;
+import com.enricotj.tangent.models.User;
 import com.firebase.client.AuthData;
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,8 +49,26 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnL
             switchToLoginFragment();
         }
         else {
+            setCurrentUser(auth.getUid());
             switchToHomeFragment();
         }
+    }
+
+    private void setCurrentUser(String uid) {
+        Firebase userRef = new Firebase(Constants.FIREBASE_USERS + "/" + uid);
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                CurrentUser.setInstance(dataSnapshot.getValue(User.class));
+                CurrentUser.setUid(dataSnapshot.getKey());
+                Log.d(Constants.TAG, "Current User: " + CurrentUser.getInstance().getUsername());
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
     }
 
     private boolean isExpired(AuthData authData) {
@@ -86,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnL
                 users.child(authData.getUid()).setValue(map);
                 username = null;
             }
+            setCurrentUser(authData.getUid());
             switchToHomeFragment();
         }
 
