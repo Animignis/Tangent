@@ -80,7 +80,7 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder> 
     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
         // Deserialize the JSON.
         final Story story = dataSnapshot.getValue(Story.class);
-        Log.d(Constants.TAG, "" + story.getRoot());
+        //Log.d(Constants.TAG, "" + story.getRoot());
 
         // We set the key ourselves.
         story.setKey(dataSnapshot.getKey());

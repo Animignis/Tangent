@@ -17,7 +17,7 @@
     <string name="search_title">Search Stories</string>
     <string name="node_hint_title">Title</string>
     <string name="node_hint_body">Body</string>
-    <string name="next_node">Next</string>
+    <string name="next_node">Choose Next</string>
     <string name="add_node">Add</string>
     <string name="random_next">Random Next</string>
     <string name="dialog_create_account_email_hint">example@gmail.com</string>
@@ -25,6 +25,9 @@
     <string name="dialog_create_account_password_hint">Password</string>
     <string name="dialog_create_account_password_confirm_hint">Confirm Password</string>
     <string name="branches_label">" Branches"</string>
+    <string name="by">"By: "</string>
+    <string name="action_favorite">Favorite Story</string>
+    <string name="branch_text_default">Text</string>
     <string-array name="story_sort_array">
         <item>Newest Stories</item>
         <item>Most Read</item>

@@ -14,6 +14,7 @@ import android.view.WindowManager;
 
 import com.enricotj.tangent.fragments.HomeFragment;
 import com.enricotj.tangent.fragments.LoginFragment;
+import com.enricotj.tangent.fragments.ReaderFragment;
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -21,7 +22,7 @@ import com.firebase.client.FirebaseError;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity implements LoginFragment.OnLoginListener, HomeFragment.OnLogoutListener {
+public class MainActivity extends AppCompatActivity implements LoginFragment.OnLoginListener, HomeFragment.OnLogoutListener, ReaderFragment.OnFavoriteListener {
 
     private LoginFragment mLoginFragment;
 
@@ -70,6 +71,13 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnL
         Firebase firebase = new Firebase(Constants.FIREBASE_URL);
         firebase.unauth();
         switchToLoginFragment();
+    }
+
+    @Override
+    public void onFavorite(String storyKey) {
+        Firebase firebase = new Firebase(Constants.FIREBASE_USERS);
+        String uid = firebase.getAuth().getUid();
+        firebase.child(uid+"/favorites/"+storyKey).setValue(true);
     }
 
     class TangentAuthResultHandler implements Firebase.AuthResultHandler {
