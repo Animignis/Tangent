@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -17,8 +18,11 @@ import android.widget.TextView;
 import android.support.v7.widget.Toolbar;
 
 import com.enricotj.tangent.Constants;
+import com.enricotj.tangent.MainActivity;
 import com.enricotj.tangent.R;
+import com.enricotj.tangent.models.CurrentUser;
 import com.enricotj.tangent.models.StoryNode;
+import com.enricotj.tangent.models.User;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -28,6 +32,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Random;
 
 
@@ -45,7 +50,8 @@ public class ReaderFragment extends Fragment implements Toolbar.OnMenuItemClickL
 
     private StoryNode mNode;
     private String mStoryKey;
-    private OnFavoriteListener mListener;
+
+    private HomeFragment.OnLogoutListener mListener;
 
     public ReaderFragment() {
         // Required empty public constructor
@@ -67,6 +73,7 @@ public class ReaderFragment extends Fragment implements Toolbar.OnMenuItemClickL
 
         Toolbar toolbar = (Toolbar)rootView.findViewById(R.id.toolbar_reader);
         getActivity().getMenuInflater().inflate(R.menu.menu_reader, toolbar.getMenu());
+        toolbar.setOnMenuItemClickListener(this);
         toolbar.setTitle(mNode.getTitle());
         toolbar.setTitleTextColor(ContextCompat.getColor(getContext(), R.color.colorWhiteBlue));
         toolbar.setNavigationIcon(R.drawable.ic_back_small);
@@ -77,6 +84,13 @@ public class ReaderFragment extends Fragment implements Toolbar.OnMenuItemClickL
             }
         });
         toolbar.setOnMenuItemClickListener(this);
+
+        if (CurrentUser.getInstance().getFavorites().containsKey(mStoryKey)) {
+            MenuItem item = toolbar.getMenu().findItem(R.id.action_favorite);
+            item.setChecked(true);
+            item.setIcon(android.R.drawable.star_big_on);
+            item.setTitle(R.string.action_unfavorite);
+        }
 
         final TextView authorText = (TextView) rootView.findViewById(R.id.node_author);
         Firebase ref = new Firebase(Constants.FIREBASE_USERS);
@@ -201,12 +215,6 @@ public class ReaderFragment extends Fragment implements Toolbar.OnMenuItemClickL
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        try {
-            mListener = (OnFavoriteListener) context;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString()
-                    + " must implement OnFavoriteListener");
-        }
     }
 
     @Override
@@ -217,19 +225,46 @@ public class ReaderFragment extends Fragment implements Toolbar.OnMenuItemClickL
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         int id = item.getItemId();
-        Log.d(Constants.TAG, "THERE WAS A CLICK");
         switch (id) {
             case R.id.action_favorite:
-                Log.d(Constants.TAG, "Favorite Menu Item Clicked!");
-                mListener.onFavorite(mStoryKey);
-                Snackbar.make(this.getView(), "Story added to favorites", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                User user = CurrentUser.getInstance();
+                Log.d(Constants.TAG, "USER: " + user.getUsername());
+                if (item.isChecked()) {
+                    item.setIcon(android.R.drawable.star_big_off);
+                    item.setTitle(R.string.action_favorite);
+                    item.setChecked(false);
+
+                    Map<String, Boolean> favorites = user.getFavorites();
+                    favorites.remove(mStoryKey);
+                    user.setFavorites(favorites);
+                    CurrentUser.getInstance().setFavorites(favorites);
+                    Firebase userRef = new Firebase(Constants.FIREBASE_USERS + "/" + user.getKey());
+                    userRef.setValue(user);
+                }
+                else {
+                    item.setIcon(android.R.drawable.star_big_on);
+                    item.setTitle(R.string.action_unfavorite);
+                    item.setChecked(true);
+
+                    Map<String, Boolean> favorites = user.getFavorites();
+                    favorites.put(mStoryKey, true);
+                    user.setFavorites(favorites);
+                    CurrentUser.getInstance().setFavorites(favorites);
+                    Firebase userRef = new Firebase(Constants.FIREBASE_USERS + "/" + user.getKey());
+                    userRef.setValue(user);
+                }
+                return true;
+            case R.id.action_home:
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+                for(int i = 0; i < fm.getBackStackEntryCount() - 1; ++i) {
+                    fm.popBackStack();
+                }
+                getActivity().onBackPressed();
+                return true;
+            case R.id.action_logout:
+                mListener.onLogout();
                 return true;
         }
         return false;
-    }
-
-    public interface OnFavoriteListener {
-        void onFavorite(String storyKey);
     }
 }
