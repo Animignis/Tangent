@@ -1,8 +1,11 @@
 package com.enricotj.tangent.fragments;
 
+import android.app.FragmentManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +17,10 @@ import com.enricotj.tangent.R;
 import com.enricotj.tangent.models.Story;
 import com.enricotj.tangent.models.StoryNode;
 import com.firebase.client.AuthData;
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
 import java.util.Date;
 
@@ -28,8 +34,11 @@ import java.util.Date;
  * create an instance of this fragment.
  */
 public class AddNodeFragment extends Fragment {
-    private static final String ARG_PARENT = "parent";
+    public static final String ARG_PARENT = "parent";
+    public static final String ARG_STORY_KEY = "story_key";
+
     private StoryNode mParent;
+    private String mStoryKey;
 
     public AddNodeFragment() {
         // Required empty public constructor
@@ -40,6 +49,7 @@ public class AddNodeFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mParent = getArguments().getParcelable(ARG_PARENT);
+            mStoryKey = getArguments().getString(ARG_STORY_KEY);
         }
     }
 
@@ -63,7 +73,7 @@ public class AddNodeFragment extends Fragment {
                 String body = bodyText.getText().toString();
                 long timestamp = (new Date()).getTime();
 
-                StoryNode storyNode = new StoryNode(author, title, body, timestamp, null);
+                final StoryNode storyNode = new StoryNode(author, title, body, timestamp, null);
 
                 Firebase newStoryNode = ref.child("nodes").push();
                 newStoryNode.setValue(storyNode);
@@ -76,6 +86,23 @@ public class AddNodeFragment extends Fragment {
                     String parentKey = mParent.getKey();
                     ref.child("nodes/"+parentKey+"/branches/"+newStoryNode.getKey()).setValue(true);
                     ref.child("nodes/"+newStoryNode.getKey()+"/parent").setValue(parentKey);
+
+                    //update story size and lastupdated
+                    final Firebase storyRef = new Firebase(Constants.FIREBASE_STORIES + "/" + mStoryKey);
+                    storyRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            Story story = dataSnapshot.getValue(Story.class);
+                            story.setSize(story.getSize() + 1);
+                            story.setLastupdated(storyNode.getTimestamp());
+                            storyRef.setValue(story);
+                        }
+
+                        @Override
+                        public void onCancelled(FirebaseError firebaseError) {
+
+                        }
+                    });
                 }
 
                 getActivity().onBackPressed();

@@ -21,6 +21,7 @@ import com.enricotj.tangent.Constants;
 import com.enricotj.tangent.MainActivity;
 import com.enricotj.tangent.R;
 import com.enricotj.tangent.models.CurrentUser;
+import com.enricotj.tangent.models.Story;
 import com.enricotj.tangent.models.StoryNode;
 import com.enricotj.tangent.models.User;
 import com.firebase.client.DataSnapshot;
@@ -63,6 +64,24 @@ public class ReaderFragment extends Fragment implements Toolbar.OnMenuItemClickL
         if (getArguments() != null) {
             mNode = getArguments().getParcelable(ARG_NODE);
             mStoryKey = getArguments().getString(ARG_STORY_KEY);
+
+            FragmentManager fm = getActivity().getSupportFragmentManager();
+            if (fm.getBackStackEntryCount() == 1) {
+                final Firebase storyRef = new Firebase(Constants.FIREBASE_STORIES + "/" + mStoryKey);
+                storyRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Story story = dataSnapshot.getValue(Story.class);
+                        story.setViews(story.getViews() + 1);
+                        storyRef.setValue(story);
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+
+                    }
+                });
+            }
         }
     }
 
@@ -97,7 +116,7 @@ public class ReaderFragment extends Fragment implements Toolbar.OnMenuItemClickL
         ref.child(mNode.getAuthor()).child("username").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                authorText.setText(getString(R.string.by) + dataSnapshot.getValue(String.class));
+                authorText.setText("By: " + dataSnapshot.getValue(String.class));
             }
 
             @Override
@@ -115,7 +134,7 @@ public class ReaderFragment extends Fragment implements Toolbar.OnMenuItemClickL
         TextView bodyText = (TextView) rootView.findViewById(R.id.node_body);
         bodyText.setText(mNode.getBody());
 
-        Button randomNextButton = (Button) rootView.findViewById(R.id.button_view_random_branch);
+        final Button randomNextButton = (Button) rootView.findViewById(R.id.button_view_random_branch);
         randomNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -123,7 +142,7 @@ public class ReaderFragment extends Fragment implements Toolbar.OnMenuItemClickL
             }
         });
 
-        Button nextButton = (Button) rootView.findViewById(R.id.button_view_branches);
+        final Button nextButton = (Button) rootView.findViewById(R.id.button_view_branches);
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,7 +150,7 @@ public class ReaderFragment extends Fragment implements Toolbar.OnMenuItemClickL
             }
         });
 
-        Button addButton = (Button) rootView.findViewById(R.id.button_add_branch);
+        final Button addButton = (Button) rootView.findViewById(R.id.button_add_branch);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -140,7 +159,8 @@ public class ReaderFragment extends Fragment implements Toolbar.OnMenuItemClickL
                 Fragment fragment = new AddNodeFragment();
 
                 Bundle args = new Bundle();
-                args.putParcelable("parent", mNode);
+                args.putParcelable(AddNodeFragment.ARG_PARENT, mNode);
+                args.putString(AddNodeFragment.ARG_STORY_KEY, mStoryKey);
                 fragment.setArguments(args);
 
                 ft.replace(R.id.fragment, fragment, Constants.TAG);
@@ -148,18 +168,38 @@ public class ReaderFragment extends Fragment implements Toolbar.OnMenuItemClickL
                 ft.commit();
             }
         });
+
+        randomNextButton.setEnabled(false);
+        randomNextButton.setVisibility(View.GONE);
+
+        nextButton.setEnabled(false);
+        nextButton.setVisibility(View.GONE);
+
         addButton.setEnabled(false);
         addButton.setVisibility(View.GONE);
 
-        if (mNode.getBranches().keySet().isEmpty()) {
-            randomNextButton.setEnabled(false);
-            randomNextButton.setVisibility(View.GONE);
-            nextButton.setEnabled(false);
-            nextButton.setVisibility(View.GONE);
+        Firebase nodeRef = new Firebase(Constants.FIREBASE_NODES + "/" + mNode.getKey());
+        nodeRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                StoryNode node = dataSnapshot.getValue(StoryNode.class);
+                if (node.getBranches().keySet().isEmpty()) {
+                    addButton.setEnabled(true);
+                    addButton.setVisibility(View.VISIBLE);
+                }
+                else {
+                    randomNextButton.setEnabled(true);
+                    randomNextButton.setVisibility(View.VISIBLE);
+                    nextButton.setEnabled(true);
+                    nextButton.setVisibility(View.VISIBLE);
+                }
+            }
 
-            addButton.setEnabled(true);
-            addButton.setVisibility(View.VISIBLE);
-        }
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
 
         return rootView;
     }
