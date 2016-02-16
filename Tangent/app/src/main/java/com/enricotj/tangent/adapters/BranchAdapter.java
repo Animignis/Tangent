@@ -40,9 +40,6 @@ public class BranchAdapter extends RecyclerView.Adapter<BranchAdapter.ViewHolder
 
         mFirebaseNodes = new Firebase(Constants.FIREBASE_NODES);
         mFirebaseNodes.child(node.getKey()).addListenerForSingleValueEvent(this);
-        for (String branch : node.getBranches().keySet()) {
-            //mFirebaseNodes.child(branch).addListenerForSingleValueEvent(new BranchValueEventListener());
-        }
     }
 
     @Override

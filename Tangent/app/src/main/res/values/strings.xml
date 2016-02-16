@@ -29,6 +29,17 @@
     <string name="action_home">Home</string>
     <string name="action_favorite">Favorite</string>
     <string name="action_unfavorite">Unfavorite</string>
+    <string name="email_invalid">The email you have entered is invalid.</string>
+    <string name="username_invalid">Your username must be 5-32 characters long.</string>
+    <string name="password_invalid">Your password must contain at least 5 characters.</string>
+    <string name="password_mismatch">The passwords you have entered do not match.</string>
+    <string name="username_taken">An account with this username already exists.</string>
+    <string name="email_taken">An account with this email already exists.</string>
+    <string name="firebase_error_unknown">UNKNOWN FIREBASE ERROR</string>
+    <string name="login_invalid_credentials">Invalid Login Credentials</string>
+    <string name="credentials_check_prompt">Please make sure your email and password are correct.</string>
+    <string name="action_view_favorites">View Favorites</string>
+    <string name="toolbar_title_favorites">Favorite Stories</string>
     <string-array name="story_sort_array">
         <item>Newest Stories</item>
         <item>Most Read</item>

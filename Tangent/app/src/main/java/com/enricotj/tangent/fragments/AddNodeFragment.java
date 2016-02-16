@@ -3,6 +3,7 @@ package com.enricotj.tangent.fragments;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -78,9 +79,11 @@ public class AddNodeFragment extends Fragment {
                 Firebase newStoryNode = ref.child("nodes").push();
                 newStoryNode.setValue(storyNode);
 
+                String snackString = "Branch";
                 if (mParent == null) {
                     Story story = new Story(storyNode.getTimestamp(), 0, newStoryNode.getKey(), 1, 1);
                     ref.child("stories").push().setValue(story);
+                    snackString = "Story";
                 } else {
                     //add this new node to the parent node's branch list in firebase
                     String parentKey = mParent.getKey();
@@ -105,6 +108,7 @@ public class AddNodeFragment extends Fragment {
                     });
                 }
 
+                Snackbar.make(getView(), "New " + snackString + " Added!", Snackbar.LENGTH_LONG).show();
                 getActivity().onBackPressed();
             }
         });

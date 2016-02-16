@@ -15,7 +15,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
@@ -28,58 +27,38 @@ import com.enricotj.tangent.models.StoryNode;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class HomeFragment extends Fragment implements Toolbar.OnMenuItemClickListener, View.OnClickListener, StoryAdapter.StoryNodeSelectCallback, AdapterView.OnItemSelectedListener {
+public class FavoritesFragment extends Fragment implements Toolbar.OnMenuItemClickListener, StoryAdapter.StoryNodeSelectCallback {
 
-    private OnLogoutListener mListener;
-
-    private Spinner mFilter;
-    private int filterPos = 0;
+    private HomeFragment.OnLogoutListener mListener;
 
     private Toolbar mToolbar;
-
     private RecyclerView mRecyclerView;
 
-    private StoryAdapter mAdapter;
-
-    public HomeFragment() {
+    public FavoritesFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_home, container, false);
-
-        if (mAdapter != null) {
-            mAdapter.refresh();
-        }
-
-        mFilter = null;
-        mAdapter = null;
-        mRecyclerView = null;
-
-        // fab
-        FloatingActionButton fab = (FloatingActionButton)rootView.findViewById(R.id.fab);
-        fab.setOnClickListener(this);
+        View rootView = inflater.inflate(R.layout.fragment_favorites, container, false);
 
         // set up toolbar
-        mToolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
-        getActivity().getMenuInflater().inflate(R.menu.menu_main, mToolbar.getMenu());
+        mToolbar = (Toolbar) rootView.findViewById(R.id.toolbar_favorites);
+        getActivity().getMenuInflater().inflate(R.menu.menu_favorites, mToolbar.getMenu());
         mToolbar.setOnMenuItemClickListener(this);
-        mToolbar.setTitle(getString(R.string.app_name));
+        mToolbar.setTitle(getString(R.string.toolbar_title_favorites));
         mToolbar.setTitleTextColor(ContextCompat.getColor(getContext(), R.color.colorWhiteBlue));
+        mToolbar.setNavigationIcon(R.drawable.ic_back_small);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().onBackPressed();
+            }
+        });
 
-        mFilter = (Spinner)rootView.findViewById(R.id.spinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this.getContext(), R.array.story_sort_array,
-                R.layout.support_simple_spinner_dropdown_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mFilter.setAdapter(adapter);
-        mFilter.setOnItemSelectedListener(this);
-
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.story_recyclerview);
-        mAdapter = new StoryAdapter(this);
-        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.favorites_recyclerview);
+        mRecyclerView.setAdapter(new FavoritesAdapter(this));
         LinearLayoutManager manager = new LinearLayoutManager(getActivity());
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(manager);
@@ -95,24 +74,8 @@ public class HomeFragment extends Fragment implements Toolbar.OnMenuItemClickLis
                 Log.d(Constants.TAG, "LOGOUT Menu Item Clicked!");
                 mListener.onLogout();
                 return true;
-            case R.id.action_view_favorites:
-                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                Fragment fragment = new FavoritesFragment();
-                ft.replace(R.id.fragment, fragment, Constants.TAG);
-                ft.addToBackStack("favorites");
-                ft.commit();
-                return true;
         }
         return false;
-    }
-
-    @Override
-    public void onClick(View v) {
-        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-        Fragment fragment = new AddNodeFragment();
-        ft.replace(R.id.fragment, fragment, Constants.TAG);
-        ft.addToBackStack("add_node");
-        ft.commit();
     }
 
     @Override
@@ -131,26 +94,10 @@ public class HomeFragment extends Fragment implements Toolbar.OnMenuItemClickLis
     }
 
     @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        String filter = parent.getItemAtPosition(position).toString();
-        mAdapter.switchFilter(filter);
-        filterPos = position;
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
-
-    public interface OnLogoutListener {
-        void onLogout();
-    }
-
-    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            mListener = (OnLogoutListener) context;
+            mListener = (HomeFragment.OnLogoutListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString()
                     + " must implement OnLogoutListener");
@@ -161,7 +108,6 @@ public class HomeFragment extends Fragment implements Toolbar.OnMenuItemClickLis
     public void onDetach() {
         super.onDetach();
         mListener = null;
-        mAdapter.refresh();
-        mAdapter = null;
     }
+
 }

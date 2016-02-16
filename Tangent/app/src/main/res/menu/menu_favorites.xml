@@ -4,12 +4,6 @@
     tools:context=".fragments.HomeFragment">
 
     <item
-        android:id="@+id/action_view_favorites"
-        android:orderInCategory="100"
-        android:title="@string/action_view_favorites"
-        app:showAsAction="never" />
-
-    <item
         android:id="@+id/action_logout"
         android:orderInCategory="100"
         android:title="@string/action_logout"

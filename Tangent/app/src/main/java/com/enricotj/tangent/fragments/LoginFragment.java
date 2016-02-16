@@ -179,21 +179,21 @@ public class LoginFragment extends Fragment {
                                 });
 
                         if (!isEmailValid(email)) {
-                            errorDialog.setMessage("The email you have entered is invalid.");
+                            errorDialog.setMessage(getString(R.string.email_invalid));
                             errorDialog.show();
                             return;
                         }
                         if (!isUsernameValid(username)) {
-                            errorDialog.setMessage("Your username must contain at least 5 characters.");
+                            errorDialog.setMessage(getString(R.string.username_invalid));
                             errorDialog.show();
                         }
                         if (!isPasswordValid(password)) {
-                            errorDialog.setMessage("Your password must contain at least 5 characters.");
+                            errorDialog.setMessage(getString(R.string.password_invalid));
                             errorDialog.show();
                             return;
                         }
                         if (!password.equals(passwordConfirm)) {
-                            errorDialog.setMessage("The passwords you have entered do not match.");
+                            errorDialog.setMessage(getString(R.string.password_mismatch));
                             errorDialog.show();
                             return;
                         }
@@ -210,7 +210,7 @@ public class LoginFragment extends Fragment {
                                     for (DataSnapshot props : child.getChildren()) {
                                         Log.d(Constants.TAG, props.getValue().toString());
                                         if (props.getKey().equals("username") && props.getValue().toString().equals(username)) {
-                                            errorDialog.setMessage("An account with this username already exists.");
+                                            errorDialog.setMessage(getString(R.string.username_taken));
                                             errorDialog.show();
                                             showProgress(false);
                                             mLoggingIn = false;
@@ -231,15 +231,15 @@ public class LoginFragment extends Fragment {
                                     public void onError(FirebaseError error) {
                                         switch (error.getCode()) {
                                             case FirebaseError.EMAIL_TAKEN:
-                                                errorDialog.setMessage("An account with this email already exists.");
+                                                errorDialog.setMessage(getString(R.string.email_taken));
                                                 errorDialog.show();
                                                 break;
                                             case FirebaseError.INVALID_EMAIL:
-                                                errorDialog.setMessage("The email you have entered is invalid.");
+                                                errorDialog.setMessage(getString(R.string.email_invalid));
                                                 errorDialog.show();
                                                 break;
                                             default:
-                                                errorDialog.setMessage("UNKNOWN FIREBASE ERROR");
+                                                errorDialog.setMessage(getString(R.string.firebase_error_unknown));
                                                 errorDialog.show();
                                                 break;
                                         }
@@ -291,7 +291,7 @@ public class LoginFragment extends Fragment {
     }
 
     private boolean isUsernameValid(String username) {
-        return username.length() > 4;
+        return username.length() > 4 && username.length() <= 32;
     }
 
     @Override
@@ -313,8 +313,8 @@ public class LoginFragment extends Fragment {
 
     public void invalidLogin() {
         new AlertDialog.Builder(getActivity())
-                .setTitle("Invalid Login Credentials")
-                .setMessage("Please make sure your email and password are correct.")
+                .setTitle(getString(R.string.login_invalid_credentials))
+                .setMessage(getString(R.string.credentials_check_prompt))
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
         showProgress(false);

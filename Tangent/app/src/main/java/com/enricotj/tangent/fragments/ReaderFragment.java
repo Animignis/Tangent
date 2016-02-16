@@ -66,7 +66,7 @@ public class ReaderFragment extends Fragment implements Toolbar.OnMenuItemClickL
             mStoryKey = getArguments().getString(ARG_STORY_KEY);
 
             FragmentManager fm = getActivity().getSupportFragmentManager();
-            if (fm.getBackStackEntryCount() == 1) {
+            if (mNode.getParent() == null) {
                 final Firebase storyRef = new Firebase(Constants.FIREBASE_STORIES + "/" + mStoryKey);
                 storyRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -104,7 +104,7 @@ public class ReaderFragment extends Fragment implements Toolbar.OnMenuItemClickL
         });
         toolbar.setOnMenuItemClickListener(this);
 
-        if (CurrentUser.getInstance().getFavorites().containsKey(mStoryKey)) {
+        if (CurrentUser.getInstance().getFavorites().containsKey(mStoryKey) && CurrentUser.getInstance().getFavorites().get(mStoryKey)) {
             MenuItem item = toolbar.getMenu().findItem(R.id.action_favorite);
             item.setChecked(true);
             item.setIcon(android.R.drawable.star_big_on);
@@ -255,11 +255,18 @@ public class ReaderFragment extends Fragment implements Toolbar.OnMenuItemClickL
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        try {
+            mListener = (HomeFragment.OnLogoutListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement OnLogoutListener");
+        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
+        mListener = null;
     }
 
     @Override
@@ -275,7 +282,7 @@ public class ReaderFragment extends Fragment implements Toolbar.OnMenuItemClickL
                     item.setChecked(false);
 
                     Map<String, Boolean> favorites = user.getFavorites();
-                    favorites.remove(mStoryKey);
+                    favorites.put(mStoryKey, false);
                     user.setFavorites(favorites);
                     CurrentUser.getInstance().setFavorites(favorites);
                     Firebase userRef = new Firebase(Constants.FIREBASE_USERS + "/" + user.getKey());
@@ -287,6 +294,23 @@ public class ReaderFragment extends Fragment implements Toolbar.OnMenuItemClickL
                     item.setChecked(true);
 
                     Map<String, Boolean> favorites = user.getFavorites();
+                    if (!favorites.containsKey(mStoryKey)) {
+                        //update number of favorites for current story
+                        final Firebase storyRef = new Firebase(Constants.FIREBASE_STORIES + "/" + mStoryKey);
+                        storyRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                Story story = dataSnapshot.getValue(Story.class);
+                                story.setNumfavorites(story.getNumfavorites() + 1);
+                                storyRef.setValue(story);
+                            }
+
+                            @Override
+                            public void onCancelled(FirebaseError firebaseError) {
+
+                            }
+                        });
+                    }
                     favorites.put(mStoryKey, true);
                     user.setFavorites(favorites);
                     CurrentUser.getInstance().setFavorites(favorites);

@@ -8,8 +8,10 @@ import android.widget.TextView;
 
 import com.enricotj.tangent.Constants;
 import com.enricotj.tangent.R;
+import com.enricotj.tangent.models.CurrentUser;
 import com.enricotj.tangent.models.Story;
 import com.enricotj.tangent.models.StoryNode;
+import com.enricotj.tangent.models.User;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -17,27 +19,29 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by enricotj on 2/14/2016.
  * TODO: This entire class needs to be refactored to only get the current user's favorites
  */
-public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.ViewHolder> implements ChildEventListener{
+public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.ViewHolder> implements ValueEventListener{
 
     private ArrayList<Story> mStories = new ArrayList<>();
     private ArrayList<StoryNode> mRootNodes = new ArrayList<>();
 
     private Firebase mFirebaseStories;
 
-    private StoryNodeSelectCallback mStoryNodeSelectCallback;
+    private StoryAdapter.StoryNodeSelectCallback mStoryNodeSelectCallback;
 
     private final int PREVIEW_TEXT_CHAR_LIMIT = 33;
 
-    public FavoritesAdapter(StoryNodeSelectCallback storyNodeSelectCallback) {
+    public FavoritesAdapter(StoryAdapter.StoryNodeSelectCallback storyNodeSelectCallback) {
         mStoryNodeSelectCallback = storyNodeSelectCallback;
 
-        mFirebaseStories = new Firebase(Constants.FIREBASE_STORIES);
-        mFirebaseStories.addChildEventListener(this);
+        mFirebaseStories = new Firebase(Constants.FIREBASE_USERS);
+        mFirebaseStories.child(CurrentUser.getInstance().getKey()).addListenerForSingleValueEvent(this);
     }
 
     @Override
@@ -77,45 +81,46 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
     }
 
     @Override
-    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-        // Deserialize the JSON.
-        final Story story = dataSnapshot.getValue(Story.class);
-        //Log.d(Constants.TAG, "" + story.getRoot());
+    public void onDataChange(DataSnapshot dataSnapshot) {
+        User user = dataSnapshot.getValue(User.class);
+        Map<String, Boolean> favorites = user.getFavorites();
+        for (String fav : favorites.keySet()) {
+            if (favorites.get(fav)) {
+                Firebase favRef = new Firebase(Constants.FIREBASE_STORIES + "/" + fav);
+                favRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        // Deserialize the JSON.
+                        final Story story = dataSnapshot.getValue(Story.class);
 
-        // We set the key ourselves.
-        story.setKey(dataSnapshot.getKey());
+                        // We set the key ourselves.
+                        story.setKey(dataSnapshot.getKey());
 
-        Firebase ref = new Firebase(Constants.FIREBASE_NODES + "/" + story.getRoot());
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                mStories.add(0, story);
-                final StoryNode storyNode = dataSnapshot.getValue(StoryNode.class);
-                storyNode.setKey(dataSnapshot.getKey());
-                mRootNodes.add(0, storyNode);
-                notifyDataSetChanged();
+                        Firebase ref = new Firebase(Constants.FIREBASE_NODES + "/" + story.getRoot());
+                        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                mStories.add(0, story);
+                                final StoryNode storyNode = dataSnapshot.getValue(StoryNode.class);
+                                storyNode.setKey(dataSnapshot.getKey());
+                                mRootNodes.add(0, storyNode);
+                                notifyDataSetChanged();
+                            }
+
+                            @Override
+                            public void onCancelled(FirebaseError firebaseError) {
+
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+
+                    }
+                });
             }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
-    }
-
-    @Override
-    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-    }
-
-    @Override
-    public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-    }
-
-    @Override
-    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
+        }
     }
 
     @Override
@@ -132,9 +137,5 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
             mTitleText = (TextView) itemView.findViewById(R.id.title_text);
             mBodyPreviewText = (TextView) itemView.findViewById(R.id.preview_text);
         }
-    }
-
-    public interface StoryNodeSelectCallback {
-        public void onStoryNodeSelect(StoryNode storyNode, String storyKey);
     }
 }

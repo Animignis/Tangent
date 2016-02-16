@@ -18,6 +18,8 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by kassalje on 1/24/2016.
@@ -33,11 +35,32 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder> 
 
     private final int PREVIEW_TEXT_CHAR_LIMIT = 33;
 
+    private Map<String, String> filters = new HashMap<>();
+    private int limit = 20;
+
     public StoryAdapter(StoryNodeSelectCallback storyNodeSelectCallback) {
         mStoryNodeSelectCallback = storyNodeSelectCallback;
 
+        filters.put("Newest Stories", "dateCreated");
+        filters.put("Most Read", "views");
+        filters.put("Most Popular", "numfavorites");
+        filters.put("Recently Updated", "lastupdated");
+
         mFirebaseStories = new Firebase(Constants.FIREBASE_STORIES);
-        mFirebaseStories.addChildEventListener(this);
+        mFirebaseStories.removeEventListener(this);
+        mFirebaseStories.orderByChild("dateCreated").limitToFirst(limit).addChildEventListener(this);
+    }
+
+    public void refresh() {
+        mFirebaseStories.removeEventListener(this);
+        mStories.clear();
+        mRootNodes.clear();
+        notifyDataSetChanged();
+    }
+
+    public void switchFilter(String filter) {
+        refresh();
+        mFirebaseStories.orderByChild(filters.get(filter)).limitToFirst(limit).addChildEventListener(this);
     }
 
     @Override
@@ -89,10 +112,10 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder> 
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                mStories.add(0, story);
                 final StoryNode storyNode = dataSnapshot.getValue(StoryNode.class);
                 storyNode.setKey(dataSnapshot.getKey());
                 mRootNodes.add(0, storyNode);
+                mStories.add(0, story);
                 notifyDataSetChanged();
             }
 
