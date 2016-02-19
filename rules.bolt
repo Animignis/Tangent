@@ -1,19 +1,47 @@
-type Key extends String;
 type UserID extends String;
+type NodeID extends String;
+type StoryID extends String;
 type Username extends String {
-	validate() { this.length > 4; }
+	validate() { this.length > 4 && this.length < 33; }
+}
+type Timestamp extends Number {
+	validate() { this <= (now + 60000); }
 }
 
 type Node {
-	validate() { this.body.length <= 300 && this.author != Null; }
+	validate() { this.body.length <= 300; }
 
 	author: UserID,
 	body: String,
-	branches: Map<Key, Boolean>,
-	parent: Key
+	branches: Map<NodeID, Boolean>,
+	parent: NodeID | Null,
+	timestamp: Timestamp,
+	title: String
+}
+
+type Story {
+	validate() { this.lastupdated >= this.dateCreated; }
+	
+	dateCreated: Timestamp,
+	lastupdated: Timestamp,
+	numfavorites: Number,
+	root: NodeID,
+	size: Number,
+	views: Number
+}
+
+type User {
+	username: Username,
+	favorites: Map<StoryID, Boolean>
 }
 
 path /nodes/{node} is Node;
+path /stories/{story} is Story;
+path /users/{user} is User;
+
+path /stories {
+	index() {["dateCreated", "views", "numfavorites", "lastupdated"]}
+}
 
 path / {
 	read() { true; }

@@ -1,0 +1,82 @@
+{
+  "rules": {
+    "nodes": {
+      "$node": {
+        ".validate": "newData.hasChildren(['author', 'body', 'timestamp', 'title']) && newData.child('body').val().length <= 300",
+        "author": {
+          ".validate": "newData.isString()"
+        },
+        "body": {
+          ".validate": "newData.isString()"
+        },
+        "branches": {
+          "$key1": {
+            ".validate": "newData.isBoolean()"
+          }
+        },
+        "parent": {
+          ".validate": "newData.isString() || newData.val() == null"
+        },
+        "timestamp": {
+          ".validate": "newData.isNumber() && newData.val() <= now + 60000"
+        },
+        "title": {
+          ".validate": "newData.isString()"
+        },
+        "$other": {
+          ".validate": "false"
+        }
+      }
+    },
+    "stories": {
+      "$story": {
+        ".validate": "newData.hasChildren(['dateCreated', 'lastupdated', 'numfavorites', 'root', 'size', 'views']) && newData.child('lastupdated').val() >= newData.child('dateCreated').val()",
+        "dateCreated": {
+          ".validate": "newData.isNumber() && newData.val() <= now + 60000"
+        },
+        "lastupdated": {
+          ".validate": "newData.isNumber() && newData.val() <= now + 60000"
+        },
+        "numfavorites": {
+          ".validate": "newData.isNumber()"
+        },
+        "root": {
+          ".validate": "newData.isString()"
+        },
+        "size": {
+          ".validate": "newData.isNumber()"
+        },
+        "views": {
+          ".validate": "newData.isNumber()"
+        },
+        "$other": {
+          ".validate": "false"
+        }
+      },
+      ".indexOn": [
+        "dateCreated",
+        "views",
+        "numfavorites",
+        "lastupdated"
+      ]
+    },
+    "users": {
+      "$user": {
+        ".validate": "newData.hasChildren(['username'])",
+        "username": {
+          ".validate": "newData.isString() && newData.val().length > 4 && newData.val().length < 33"
+        },
+        "favorites": {
+          "$key2": {
+            ".validate": "newData.isBoolean()"
+          }
+        },
+        "$other": {
+          ".validate": "false"
+        }
+      }
+    },
+    ".read": "true",
+    ".write": "true"
+  }
+}
