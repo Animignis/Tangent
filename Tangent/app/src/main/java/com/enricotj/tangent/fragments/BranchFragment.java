@@ -73,7 +73,8 @@ public class BranchFragment extends Fragment implements StoryAdapter.StoryNodeSe
                 Fragment fragment = new AddNodeFragment();
 
                 Bundle args = new Bundle();
-                args.putParcelable("parent", mNode);
+                args.putParcelable(AddNodeFragment.ARG_PARENT, mNode);
+                args.putString(AddNodeFragment.ARG_STORY_KEY, mStoryKey);
                 fragment.setArguments(args);
 
                 ft.replace(R.id.fragment, fragment, Constants.TAG);

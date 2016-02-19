@@ -91,11 +91,14 @@ public class AddNodeFragment extends Fragment {
                     ref.child("nodes/"+newStoryNode.getKey()+"/parent").setValue(parentKey);
 
                     //update story size and lastupdated
+                    Log.d(Constants.TAG, mStoryKey);
                     final Firebase storyRef = new Firebase(Constants.FIREBASE_STORIES + "/" + mStoryKey);
                     storyRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             Story story = dataSnapshot.getValue(Story.class);
+                            Log.d(Constants.TAG, "STORY SIZE INCREMENT: " + dataSnapshot.getKey());
+                            story.setKey(dataSnapshot.getKey());
                             story.setSize(story.getSize() + 1);
                             story.setLastupdated(storyNode.getTimestamp());
                             storyRef.setValue(story);
